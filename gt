@@ -3,11 +3,10 @@
 # I like to launch terminals from the command line instead of icons.
 # J. Cutter 
 
-# Set names for gnome-terminal profile to use.
+# Set name for gnome-terminal profile to use.
 PROFILE="Blue"
 
 # Create these profiles in gnome-terminal on your own.
-
 SMALL="80x40"
 MEDIUM="100x50"
 LARGE="120x60"
