@@ -3,12 +3,14 @@
 # I like to launch terminals from the command line instead of icons.
 # J. Cutter 
 
-# Set names for gnome-terminal profiles to use -s, -m, and -l options.
+# Set names for gnome-terminal profile to use.
+PROFILE="Blue"
+
 # Create these profiles in gnome-terminal on your own.
 
-SMALL="Blue_Small"
-MEDIUM="Blue_Medium"
-LARGE="Blue_Large"
+SMALL="80x40"
+MEDIUM="100x50"
+LARGE="120x60"
 
 NAME=$(basename $0)
 
@@ -29,9 +31,9 @@ function usage {
 while getopts lmshf: OPT
 do
   case $OPT in
-    s) PROFILE="$SMALL" ;;
-    m) PROFILE="$MEDIUM" ;;
-    l) PROFILE="$LARGE" ;;
+    s) SIZE="$SMALL" ;;
+    m) SIZE="$MEDIUM" ;;
+    l) SIZE="$LARGE" ;;
     f) FILE=$OPTARG ;;
     *) usage ;;
   esac
@@ -39,9 +41,9 @@ done
 
 shift $((OPTIND-1))
 
-if [ -z "$PROFILE" ]
+if [ -z "$SIZE" ]
 then
-  PROFILE="Blue"
+  SIZE=$SMALL
 fi
 
 if [ -n "$FILE" ]
@@ -60,8 +62,8 @@ if [ -n "$SERVERS" ]
 then
   for i in $SERVERS
   do
-    gnome-terminal --profile="$PROFILE" -e "ssh $i"
+    gnome-terminal --profile="$PROFILE" --geometry=$SIZE -e "ssh $i"
   done
 else
-  gnome-terminal --profile="$PROFILE"
+  gnome-terminal --profile="$PROFILE" --geometry=$SIZE
 fi
