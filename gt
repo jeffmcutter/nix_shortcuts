@@ -40,11 +40,6 @@ done
 
 shift $((OPTIND-1))
 
-if [ -z "$SIZE" ]
-then
-  SIZE=$SMALL
-fi
-
 if [ -n "$FILE" ]
 then
   if [[ -f "$FILE" && -r "$FILE" ]]
@@ -57,12 +52,20 @@ else
   SERVERS=$*
 fi
 
+COMMAND="gnome-terminal --profile=$PROFILE"
+
+if [ -n "$SIZE" ]
+then
+  COMMAND="$COMMAND --geometry=$SIZE"
+fi
+
+
 if [ -n "$SERVERS" ]
 then
   for i in $SERVERS
   do
-    gnome-terminal --profile="$PROFILE" --geometry=$SIZE -e "ssh $i"
+    $COMMAND -e "ssh $i"
   done
 else
-  gnome-terminal --profile="$PROFILE" --geometry=$SIZE
+  $COMMAND
 fi
