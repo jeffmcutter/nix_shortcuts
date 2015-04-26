@@ -4,7 +4,7 @@
 # J. Cutter 
 
 # Set name for gnome-terminal profile to use.
-PROFILE="Blue"
+PROFILE="Solarized_Dark"
 
 # Create these profiles in gnome-terminal on your own.
 SMALL="80x40"
