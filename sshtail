@@ -1,0 +1,88 @@
+#!/bin/bash
+# A quick way to run multitail with ssh.
+# J. Cutter
+
+NAME=$(basename $0)
+
+function usage {
+  echo
+  echo "USAGE: $NAME [-l|-L] ( -f hosts_file | -h host1,host2,host3 ) [-g pattern] [-i] [-u user] logfile"
+  echo
+  echo "  -l is default and does multitail -l (separate panes per host/logfile)."
+  echo "  -L overrides -l default and uses multitail -L (single pane for all)."
+  echo "  -f can be used to specify a hosts_file one host per line."
+  echo "  -h can alternatively be used to specify hosts as a single argument ether csv or space separated."
+  echo "  -g can be used to specify a pattern to grep the tail for."
+  echo "  -i will run grep with -i to ignore case."
+  echo "  -u lets you specify the user to connect as, note you can also specify host as user@host."
+  echo "  logfile specifies what log to tail."
+  echo
+  exit 1
+}
+
+while getopts lLf:h:g:iu: OPT
+do
+  case $OPT in
+    l) L=l ;;
+    L) L=L ;;
+    f) FILE=$OPTARG ;;
+    h) HOSTS=$OPTARG ;;
+    g) PATTERN=$OPTARG ;;
+    i) i="-i" ;;
+    u) USEROPT="$OPTARG@" ;;
+    *) usage ;;
+  esac
+done
+
+shift $((OPTIND-1))
+
+if [ -n "$FILE" ]
+then
+  if [[ -f "$FILE" && -r "$FILE" ]]
+  then
+    SERVERS=$(egrep -v "^#" $FILE)
+  else
+    echo "File $FILE not found or not readable."
+  fi
+else
+  SERVERS=$*
+fi
+
+if [ -n "$HOSTS" ]
+then
+  if [ $(echo $HOSTS | grep ",") ]
+  then
+    SERVERS=$(echo $HOSTS | sed 's/,/ /g')
+  else
+    SERVERS=$HOSTS
+  fi
+fi
+
+if [ -z "$L" ]
+then
+  L=l
+fi
+
+LOGFILE=$1
+
+if [[ -z "$SERVERS" || -z "$LOGFILE" ]]
+then
+  usage
+fi
+
+COMMAND="multitail"
+
+for SERVER in $SERVERS
+do
+  COMMAND="$COMMAND -$L \"ssh $USEROPT$SERVER tail -f $LOGFILE"
+  if [ -n "$PATTERN" ]
+  then
+    COMMAND="$COMMAND | grep $i '$PATTERN'\""
+  else
+    COMMAND="$COMMAND\""
+  fi
+done
+
+echo "Running: $COMMAND"
+
+eval $COMMAND
