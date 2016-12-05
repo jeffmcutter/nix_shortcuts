@@ -1,0 +1,10 @@
+#!/bin/bash
+
+timeout 1 bash -c "cat < /dev/null > /dev/tcp/$1/$2"
+
+if [ $? -eq 0 ]
+then
+  echo $1 $2 SUCCESS
+else
+  echo $1 $2 TIMEOUT
+fi
