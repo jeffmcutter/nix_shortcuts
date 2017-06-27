@@ -77,8 +77,13 @@ sudo virt-resize --expand /dev/sda1 $IMG_PATH /var/lib/libvirt/images/$VMNAME.qc
 sudo virt-customize -a \
 /var/lib/libvirt/images/$VMNAME.qcow2 \
 --hostname $VMNAME \
+--touch /.autorelabel \
+--root-password password:redhat \
+--run-command '/bin/yum -y remove cloud-init' \
 --upload $WORKDIR/ifcfg-eth0:/etc/sysconfig/network-scripts/ifcfg-eth0 \
+--edit /etc/ssh/sshd_config:s/PasswordAuthentication\ no/PasswordAuthentication\ yes/g \
 --mkdir /root/.ssh \
+--chmod 0700:/root/.ssh \
 --upload $WORKDIR/authorized_keys:/root/.ssh/authorized_keys \
 --upload $WORKDIR/.bashrc:/root/.bashrc \
 --upload $WORKDIR/.inputrc:/root/.inputrc \
