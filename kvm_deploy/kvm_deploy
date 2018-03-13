@@ -48,6 +48,7 @@ fi
 VMNAME="$NAME$1"
 IMG_PATH="$IMG_LOCATION/$IMG_FILE"
 PURPOSE=$2
+DEST_NAME="${VMNAME}_${PURPOSE}"
 IP=$(getent hosts $VMNAME | awk '{print $1}')
 if [ -r "$WORKDIR/network" ]
 then
@@ -70,12 +71,12 @@ fi
 
 sed -i -e "s/^IPADDR=.*/IPADDR=$IP/" $WORKDIR/ifcfg-eth0 \
 && \
-sudo qemu-img create -f qcow2 /var/lib/libvirt/images/$VMNAME.qcow2 20G \
+sudo qemu-img create -f qcow2 /var/lib/libvirt/images/$DEST_NAME.qcow2 20G \
 && \
-sudo virt-resize --expand /dev/sda1 $IMG_PATH /var/lib/libvirt/images/$VMNAME.qcow2 \
+sudo virt-resize --expand /dev/sda1 $IMG_PATH /var/lib/libvirt/images/$DEST_NAME.qcow2 \
 && \
 sudo virt-customize -a \
-/var/lib/libvirt/images/$VMNAME.qcow2 \
+/var/lib/libvirt/images/$DEST_NAME.qcow2 \
 --hostname $VMNAME \
 --touch /.autorelabel \
 --root-password password:redhat \
@@ -90,7 +91,7 @@ sudo virt-customize -a \
 --upload $WORKDIR/.vimrc:/root/.vimrc \
 && \
 sudo /usr/bin/virt-install \
---disk path=/var/lib/libvirt/images/$VMNAME.qcow2 \
+--disk path=/var/lib/libvirt/images/$DEST_NAME.qcow2 \
 --import \
 --network $NETWORK \
 --name ${VMNAME}_${PURPOSE} \
