@@ -10,7 +10,7 @@ MEMORY_MB=4096
 
 if [ "$NAME" == 'rhel' ]
 then
-  IMG_FILE="rhel-server-7.5-update-1-x86_64-kvm.qcow2"
+  IMG_FILE="rhel-server-7.6-x86_64-kvm.qcow2"
 else
   echo "Unable to determine IMG_FILE."
   exit 1
