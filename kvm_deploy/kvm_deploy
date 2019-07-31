@@ -13,7 +13,7 @@ then
   IMG_FILE="rhel-server-7.6-x86_64-kvm.qcow2"
 elif [ "$NAME" == 'rhel8' ]
 then
-  IMG_FILE="rhel-8.0-x86_64-kvm.qcow2"
+  IMG_FILE="rhel-8.0-update-0-x86_64-kvm.qcow2"
 else
   echo "Unable to determine IMG_FILE."
   exit 1
