@@ -7,10 +7,19 @@ IMG_LOCATION="$HOME/media"
 WORKDIR="$HOME/work/kvm_deploy"
 CPUCOUNT=2
 MEMORY_MB=4096
+DISK=20G
+OS=$NAME
 
 if [ "$NAME" == 'rhel7' ]
 then
   IMG_FILE="rhel-server-7.6-x86_64-kvm.qcow2"
+elif [ "$NAME" == 'sat' ]
+then
+  CPUCOUNT=4
+  MEMORY_MB=20480
+  DISK=100G
+  IMG_FILE="rhel-server-7.6-x86_64-kvm.qcow2"
+  OS=rhel7
 elif [ "$NAME" == 'rhel8' ]
 then
   IMG_FILE="rhel-8.0-update-0-x86_64-kvm.qcow2"
@@ -74,7 +83,7 @@ fi
 
 sed -i -e "s/^IPADDR=.*/IPADDR=$IP/" $WORKDIR/ifcfg-eth0 \
 && \
-sudo qemu-img create -f qcow2 /var/lib/libvirt/images/$DEST_NAME.qcow2 20G \
+sudo qemu-img create -f qcow2 /var/lib/libvirt/images/$DEST_NAME.qcow2 $DISK \
 && \
 sudo virt-resize --expand /dev/sda1 $IMG_PATH /var/lib/libvirt/images/$DEST_NAME.qcow2 \
 && \
@@ -102,7 +111,7 @@ sudo /usr/bin/virt-install \
 --vcpus $CPUCOUNT \
 --ram $MEMORY_MB \
 --os-type=linux \
---os-variant=$NAME-unknown \
+--os-variant=$OS-unknown \
 --noautoconsole \
 && \
 #(
