@@ -10,7 +10,8 @@ MEMORY_MB=4096
 DISK=20G
 OS=$NAME
 RHEL7_IMG="rhel-server-7.7-x86_64-kvm.qcow2"
-RHEL8_IMG="rhel-8.0-update-0-x86_64-kvm.qcow2"
+#RHEL8_IMG="rhel-8.0-update-0-x86_64-kvm.qcow2"
+RHEL8_IMG="rhel-8.1-x86_64-kvm.qcow2"
 IMG_FILE=$RHEL7_IMG
 
 if [ "$NAME" == 'sat' ]
